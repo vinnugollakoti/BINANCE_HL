@@ -1,0 +1,92 @@
+Below is a clean, ready-to-copy **README.md** with all steps, commands, and formatting.
+
+---
+
+# Hyperliquid Non-Validator Node Setup Guide
+
+This guide shows how to set up a **Hyperliquid Non-Validator Node** on any Linux server (Ubuntu recommended).
+
+## 1. Create Working Directory
+
+```bash
+mkdir -p ~/hl
+cd ~/hl
+```
+
+## 2. Download Hyperliquid Visor Binary & Signature
+
+```bash
+curl -o hl-visor https://binaries.hyperliquid.xyz/Mainnet/hl-visor
+chmod +x hl-visor
+
+curl -o hl-visor.asc https://binaries.hyperliquid.xyz/Mainnet/hl-visor.asc
+curl -o pub_key.asc https://raw.githubusercontent.com/hyperliquid-dex/node/main/pub_key.asc
+```
+
+## 3. Import GPG Key & Verify Binary
+
+```bash
+gpg --import pub_key.asc
+gpg --verify hl-visor.asc hl-visor
+```
+
+You should see: **Good signature from "Hyperliquid <[notices@hyperfoundation.org](mailto:notices@hyperfoundation.org)>"**
+
+## 4. Create Visor Config
+
+```bash
+echo '{"chain": "Mainnet"}' > ~/hl/visor.json
+```
+
+## 5. Create Gossip Override Config (Optional but recommended)
+
+Create the file:
+
+```bash
+cat > ~/hl_tst/override_gossip_config.json <<EOF
+{
+  "root_node_ips": [
+    {"Ip": "64.31.48.111"},
+    {"Ip": "64.31.51.137"},
+    {"Ip": "34.146.230.150"},
+    {"Ip": "79.127.159.173"},
+    {"Ip": "79.127.159.174"}
+  ],
+  "try_new_peers": true,
+  "chain": "Mainnet"
+}
+EOF
+```
+
+## 6. Open Required Ports
+
+Ensure inbound traffic for:
+
+* **4001/tcp**
+* **4002/tcp**
+
+For UFW:
+
+```bash
+sudo ufw allow 4001
+sudo ufw allow 4002
+sudo ufw reload
+```
+
+For AWS EC2:
+Add inbound rules for ports **4001** and **4002** (Anywhere-IPv4 or your custom range).
+
+## 7. Run the Non-Validator Node
+
+```bash
+./hl-visor run-non-validator
+```
+
+The node will start syncing. Logs like:
+
+```
+hl-node @@ applied block XXXXXXXX
+```
+
+mean it's working normally.
+---
