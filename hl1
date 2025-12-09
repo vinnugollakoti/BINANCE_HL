@@ -1,0 +1,30 @@
+cat > ~/hl_tst/override_gossip_config.json <<EOF
+{
+  "root_node_ips": [
+    {"Ip": "64.31.48.111"},
+    {"Ip": "64.31.51.137"},
+    {"Ip": "34.146.230.150"},
+    {"Ip": "79.127.159.173"},
+    {"Ip": "79.127.159.174"}
+  ],
+  "try_new_peers": true,
+  "chain": "Mainnet"
+}
+EOF
+
+
+linuxuser@hl-node:~/hl$ ls -l ~/hl
+total 79720
+drwxrwxr-x 19 linuxuser linuxuser     4096 Dec  9 10:44 data
+drwxrwxr-x  2 linuxuser linuxuser     4096 Dec  9 10:32 file_mod_time_tracker
+-rwxrwxr-x  1 linuxuser linuxuser 75867616 Dec  9 10:52 hl-node
+-rw-rw-r--  1 linuxuser linuxuser      228 Dec  9 10:52 hl-node.asc
+-rwxrwxr-x  1 linuxuser linuxuser  5715312 Dec  9 10:28 hl-visor
+-rw-rw-r--  1 linuxuser linuxuser      228 Dec  9 10:28 hl-visor.asc
+drwxrwxr-x  4 linuxuser linuxuser     4096 Dec  9 10:58 hyperliquid_data
+-rw-rw-r--  1 linuxuser linuxuser       17 Dec  9 10:52 last_known_public_ip.json
+-rw-rw-r--  1 linuxuser linuxuser      221 Dec  9 10:31 override_gossip_config.json
+-rw-rw-r--  1 linuxuser linuxuser      656 Dec  9 10:29 pub_key.asc
+-rw-rw-r--  1 linuxuser linuxuser       78 Dec  9 10:52 rpc_config.json
+drwxrwxr-x  5 linuxuser linuxuser     4096 Dec  9 10:44 tmp
+-rw-rw-r--  1 linuxuser linuxuser       21 Dec  9 10:31 visor.json
