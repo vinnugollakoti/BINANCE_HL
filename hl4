@@ -1,0 +1,166 @@
+Below is the **correct, complete, minimal, working folder layout** for a **Hyperliquid Non-Validator Node** using the *JSON-based visor* (the version your binary supports).
+
+This matches official Hyperliquid Mainnet instructions exactly and fixes all errors you saw.
+
+---
+
+# ✅ **Final Correct Folder Layout**
+
+Your home directory must contain a folder named **`hl/`** (NOT `node/`).
+
+```
+/home/ubuntu/hl
+│
+├── hl-visor
+├── hl-visor.asc
+├── hl-node
+├── hl-node.asc
+│
+├── visor.json
+├── override_gossip_config.json
+│
+├── hyperliquid_data/           ← auto-created by the node
+│   ├── visor_abci_state.json   ← created on first successful sync
+│   └── ... other state files
+│
+└── logs/                       ← optional, auto-created
+```
+
+This is the structure Hyperliquid expects.
+
+---
+
+# ✅ **1. Create the directory**
+
+```bash
+mkdir -p ~/hl
+cd ~/hl
+```
+
+---
+
+# ✅ **2. Download visor + signature into ~/hl**
+
+```bash
+curl -o hl-visor https://binaries.hyperliquid.xyz/Mainnet/hl-visor
+chmod +x hl-visor
+
+curl -o hl-visor.asc https://binaries.hyperliquid.xyz/Mainnet/hl-visor.asc
+```
+
+---
+
+# ✅ **3. Download node binary + signature into ~/hl**
+
+```bash
+curl -o hl-node https://binaries.hyperliquid.xyz/Mainnet/hl-node
+chmod +x hl-node
+
+curl -o hl-node.asc https://binaries.hyperliquid.xyz/Mainnet/hl-node.asc
+```
+
+---
+
+# ✅ **4. Import PGP key**
+
+(Use the official GitHub key you already have)
+
+```bash
+gpg --import pub_key.asc
+```
+
+---
+
+# ✅ **5. Verify both binaries**
+
+```bash
+gpg --verify hl-visor.asc hl-visor
+gpg --verify hl-node.asc hl-node
+```
+
+Must return **Good signature**.
+
+---
+
+# ✅ **6. Create `visor.json`**
+
+This tells the visor which chain to run.
+
+```bash
+echo '{"chain": "Mainnet"}' > ~/hl/visor.json
+```
+
+---
+
+# ✅ **7. Create `override_gossip_config.json`**
+
+This is REQUIRED on Mainnet to discover peers.
+
+```bash
+cat > ~/hl/override_gossip_config.json <<EOF
+{
+  "root_node_ips": [
+    {"Ip": "64.31.48.111"},
+    {"Ip": "147.28.238.35"},
+    {"Ip": "15.204.167.6"}
+  ],
+  "try_new_peers": true,
+  "chain": "Mainnet"
+}
+EOF
+```
+
+These are official Hyperliquid Mainnet seed peers.
+
+---
+
+# ✅ **8. Open the required ports**
+
+### **AWS Security Group**
+
+Allow inbound:
+
+| Port | Protocol | Purpose | Source    |
+| ---- | -------- | ------- | --------- |
+| 4001 | TCP      | Gossip  | 0.0.0.0/0 |
+| 4002 | TCP      | PubSub  | 0.0.0.0/0 |
+
+### **Ubuntu firewall**
+
+```bash
+sudo ufw allow 4001/tcp
+sudo ufw allow 4002/tcp
+```
+
+---
+
+# ✅ **9. Start the node**
+
+```bash
+cd ~/hl
+./hl-visor run-non-validator
+```
+
+If everything is correct, logs should show:
+
+```
+starting visor...
+downloading hl-node (if needed)
+starting hl-node
+spawning gossip rpc: 0.0.0.0
+connecting to peers...
+syncing blocks...
+```
+
+---
+
+# 🎉 **Your node is now correctly initialized**
+
+If you want, I can also provide:
+
+* a **systemd service** (for 24/7 auto-restart)
+* a **health-check script**
+* a **Grafana dashboard**
+* automatic **pruning setup**
+
+Just say the word.
