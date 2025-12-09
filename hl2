@@ -1,0 +1,36 @@
+Document to create hyperliquid non validator node
+mkdir -p ~/hl
+
+cd ~/hl
+
+curl -o hl-visor https://binaries.hyperliquid.xyz/Mainnet/hl-visor
+
+chmod +x hl-visor
+
+curl -o hl-visor.asc https://binaries.hyperliquid.xyz/Mainnet/hl-visor.asc
+
+curl -o pub_key.asc https://raw.githubusercontent.com/hyperliquid-dex/node/main/pub_key.asc
+
+gpg --import pub_key.asc
+
+gpg --verify hl-visor.asc hl-visor
+
+echo '{"chain": "Mainnet"}' > ~/hl/visor.json
+
+cat > ~/hl_tst/override_gossip_config.json <<EOF
+{
+  "root_node_ips": [
+    {"Ip": "64.31.48.111"},
+    {"Ip": "64.31.51.137"},
+    {"Ip": "34.146.230.150"},
+    {"Ip": "79.127.159.173"},
+    {"Ip": "79.127.159.174"}
+  ],
+  "try_new_peers": true,
+  "chain": "Mainnet"
+}
+EOF
+
+Make sure you open the ports for 4001 and 4002 
+
+./hl-visor run-non-validator
